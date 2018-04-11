@@ -1,20 +1,17 @@
-describe('angularjs homepage', function() {
-    it('should greet the named user', function() {
-        // Load the AngularJS homepage.
-        browser.get('http://www.angularjs.org');
+describe('angularjs homepage todo list', function() {
+    it('should add a todo', function() {
+        browser.get('https://angularjs.org');
 
-        // Find the element with ng-model matching 'yourName' - this will
-        // find the <input type="text" ng-model="yourName"/> element - and then
-        // type 'Julie' into it.
-        element(by.model('yourName')).sendKeys('Julie');
+        element(by.model('todoList.todoText')).sendKeys('write first protractor test');
+        element(by.css('[value="add"]')).click();
 
-        // Find the element with binding matching 'yourName' - this will
-        // find the <h1>Hello {{yourName}}!</h1> element.
-        var greeting = element(by.binding('yourName'));
+        var todoList = element.all(by.repeater('todo in todoList.todos'));
+        expect(todoList.count()).toEqual(3);
+        expect(todoList.get(2).getText()).toEqual('write first protractor test');
 
-        // Assert that the text element has the expected value.
-        // Protractor patches 'expect' to understand promises.
-
-        expect(greeting.getText()).toEqual('Hello Julie!');
+        // You wrote your first test, cross it off the list
+        todoList.get(2).element(by.css('input')).click();
+        var completedAmount = element.all(by.css('.done-true'));
+        expect(completedAmount.count()).toEqual(2);
     });
 });
